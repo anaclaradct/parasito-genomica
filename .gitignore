@@ -216,3 +216,15 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Dados do projeto (não podem ser publicados)
+/00_RAW/
+/01_CURATED/
+/02_LOGS/
+/03_ALIGNMENTS/
+/04_TREES/
+/05_RESULTS/
+/numt_check/
+*.nex
+*.tsv
+*.gb
