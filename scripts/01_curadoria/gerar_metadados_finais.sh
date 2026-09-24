@@ -16,14 +16,11 @@ process_dir() {
     local status="$2"
     find "$base" -name "*.fasta" -not -path "*_QUARANTINE*" | while read -r f; do
         # pasta relativa dentro de 01_CURATED define especie/marcador
+        # (esta funcao so e chamada com status="curado"; arquivos em
+        # _QUARANTINE sao tratados pelo loop separado logo abaixo)
         rel="${f#01_CURATED/}"
-        if [ "$status" = "curado" ]; then
-            especie=$(dirname "$rel")
-            marcador=$(basename "$rel" .fasta)
-        else
-            especie="_QUARANTINE"
-            marcador="-"
-        fi
+        especie=$(dirname "$rel")
+        marcador=$(basename "$rel" .fasta)
 
         grep "^>" "$f" | sed 's/^>//' | awk '{print $1}' | while read -r acc; do
             GB=$(efetch -db nuccore -id "$acc" -format gb 2>/dev/null || echo "")

@@ -36,6 +36,9 @@ if __name__ == "__main__":
             continue
         h = matches[0]
         p, u = primeira_ultima_base(seqs[h])
+        if p is None or u is None:
+            print(f"AVISO: {h} nao tem nenhuma base (so gaps), ignorando", file=sys.stderr)
+            continue
         print(f"{h}: cobre colunas {p}-{u}")
         if inicio is None or p > inicio:
             inicio = p

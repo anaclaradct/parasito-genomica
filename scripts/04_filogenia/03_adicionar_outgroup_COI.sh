@@ -29,7 +29,7 @@ mafft --add "$OUTGROUP_FASTA" --keeplength --thread -1 "$ALIGNED" > "$ALIGNED_RO
 n_seqs=$(grep -c "^>" "$ALIGNED_ROOTED")
 echo "   Alinhamento agora tem $n_seqs sequencias (68 + 1 outgroup)."
 
-OUTGROUP_HEADER=$(grep "^>$OUTGROUP_ACC" "$ALIGNED_ROOTED" | head -1 | sed 's/^>//' | awk '{print $1}')
+OUTGROUP_HEADER=$(grep -F ">$OUTGROUP_ACC" "$ALIGNED_ROOTED" | head -1 | sed 's/^>//' | awk '{print $1}')
 
 IQTREE_BIN=""
 for candidate in iqtree3 iqtree2 iqtree; do

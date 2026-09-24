@@ -16,36 +16,18 @@ Todas as funcoes usam SO Python padrao (sem numpy/scipy), pensado pra
 rodar em qualquer maquina sem instalar nada.
 """
 import sys
+import os
 import csv
 import math
 import random
 from itertools import combinations
 from collections import defaultdict, Counter
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
+from fasta_utils import parse_fasta
+
 PURINES = set("AG")
 PYRIMIDINES = set("CT")
-
-
-# ---------------------------------------------------------------------------
-# Utilidades basicas (compartilhadas)
-# ---------------------------------------------------------------------------
-
-def parse_fasta(path):
-    records = []
-    header, seq = None, []
-    with open(path) as f:
-        for line in f:
-            line = line.rstrip("\n")
-            if line.startswith(">"):
-                if header is not None:
-                    records.append((header, "".join(seq).upper()))
-                header = line[1:].split()[0]
-                seq = []
-            else:
-                seq.append(line.strip())
-        if header is not None:
-            records.append((header, "".join(seq).upper()))
-    return records
 
 
 def pairwise_diff_count(a, b):
@@ -337,15 +319,18 @@ def amova_phi_st(by_group, n_permutations=1000, seed=42):
     if N < 3 or k < 2:
         return None, None, {"erro": "dados insuficientes (precisa >=2 grupos, >=3 sequencias)"}
 
+    # SSD total independe da atribuicao de grupo (so depende do conjunto
+    # fixo de sequencias), entao e calculado uma unica vez aqui fora,
+    # em vez de dentro de compute_phi() a cada uma das n_permutations chamadas.
+    ssd_total = 0.0
+    for (s1, _), (s2, _) in combinations(all_seqs, 2):
+        d, L = pairwise_diff_count(s1, s2)
+        if d is not None:
+            ssd_total += d * d
+    ssd_total /= N
+
     def compute_phi(assignment):
         # assignment: lista paralela a all_seqs, com o grupo de cada um
-        # SSD total
-        ssd_total = 0.0
-        for (s1, _), (s2, _) in combinations(all_seqs, 2):
-            d, L = pairwise_diff_count(s1, s2)
-            if d is not None:
-                ssd_total += d * d
-        ssd_total /= N
 
         # SSD dentro dos grupos
         by_g = defaultdict(list)
