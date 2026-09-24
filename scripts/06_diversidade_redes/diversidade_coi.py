@@ -32,31 +32,17 @@ METODOLOGIA (para reportar nos metodos):
     MEGA/DnaSP).
 """
 import sys
+import os
 import csv
 import math
 from itertools import combinations
 from collections import Counter
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
+from fasta_utils import parse_fasta
+
 PURINES = set("AG")
 PYRIMIDINES = set("CT")
-
-
-def parse_fasta(path):
-    records = []
-    header, seq = None, []
-    with open(path) as f:
-        for line in f:
-            line = line.rstrip("\n")
-            if line.startswith(">"):
-                if header is not None:
-                    records.append((header, "".join(seq).upper()))
-                header = line[1:].split()[0]
-                seq = []
-            else:
-                seq.append(line.strip())
-        if header is not None:
-            records.append((header, "".join(seq).upper()))
-    return records
 
 
 def basic_site_stats(seqs):

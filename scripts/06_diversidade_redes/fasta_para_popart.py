@@ -25,24 +25,11 @@ gaps das sequencias mais curtas podem gerar nos artificiais e o numero de
 (que usa deleção completa). Use --core para a versao comparavel/definitiva.
 """
 import sys
+import os
 import csv
 
-def parse_fasta(path):
-    records = []
-    header, seq = None, []
-    with open(path) as f:
-        for line in f:
-            line = line.rstrip("\n")
-            if line.startswith(">"):
-                if header is not None:
-                    records.append((header, "".join(seq).upper()))
-                header = line[1:].split()[0]
-                seq = []
-            else:
-                seq.append(line.strip())
-        if header is not None:
-            records.append((header, "".join(seq).upper()))
-    return records
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
+from fasta_utils import parse_fasta
 
 def complete_deletion_core(seqs):
     """Mesma logica do diversidade_coi.py: mantem so colunas sem NENHUM gap
@@ -112,6 +99,10 @@ def main():
               f"confira se bate com o 'core próprio' do diversidade_coi.py para este grupo)")
 
     nchar = max(len(s) for _, s, _ in kept)
+    # preenche com gap ("-") as sequencias mais curtas que nchar, senao o
+    # NEXUS gerado declara NCHAR maior que o comprimento real de algumas
+    # linhas da MATRIX e o PopART rejeita o arquivo ou desalinha colunas.
+    kept = [(acc, seq.ljust(nchar, "-"), g) for acc, seq, g in kept]
 
     groups = sorted(set(g for _, _, g in kept))
     n_taxa = len(kept)
