@@ -1,10 +1,12 @@
-# Scripts do pipeline — Mansonella (COI / 12S / mitogenomas)
+# Scripts do pipeline — Mansonella
 
-Todos os scripts usam caminhos relativos à raiz do projeto (a pasta que
-contém 01_CURATED, 03_ALIGNMENTS etc.). Rode sempre a partir dela, ex.:
+Os scripts das pastas `01` a `09` usam caminhos relativos à raiz do projeto
+(a pasta que contém 01_CURATED, 03_ALIGNMENTS etc.). Rode sempre a partir dela, ex.:
 
     bash scripts/02_alinhamento/01_alinhar_COI.sh
     python3 scripts/02_alinhamento/qc_alinhamento.py 03_ALIGNMENTS/COI_aligned.fasta
+
+## Marcadores mitocondriais e mitogenomas
 
 | Etapa | Scripts |
 |---|---|
@@ -18,3 +20,9 @@ contém 01_CURATED, 03_ALIGNMENTS etc.). Rode sempre a partir dela, ex.:
 | `08_comparacao_topologias` | `rf_distancia.py` |
 | `09_complementos` | `filo_utils.py` (funções compartilhadas), `dividir_por_particoes.py`, `metricas_por_gene.py`, `resolucao_arvores.py`, `nucleo_comum_alinhamento.py`, `podar_para_dambe.py` |
 | `common` | `fasta_utils.py` (leitura de FASTA e tabela genética 5) |
+
+## Assemblies nucleares
+
+| Etapa | Scripts |
+|---|---|
+| `10_eixo2_assemblies` | `n50.py` (contiguidade), `analise_busco.py` (completude), `classifica.py` (classificação dos genes candidatos a partir do miniprot), `testa62.py` (busca por HMMER dos genes BUSCO ausentes) |
